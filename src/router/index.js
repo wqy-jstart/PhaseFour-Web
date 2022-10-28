@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 
 Vue.use(VueRouter)
 
+//★配置路由(新的页面,必须要有一个路由配置才可通过网址进行访问)
 const routes = [
   {
     path: '/',
@@ -17,6 +18,10 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+  },
+  {
+    path: '/other',
+    component: () => import( '../views/OtherView.vue')
   }
 ]
 
