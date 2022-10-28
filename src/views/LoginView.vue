@@ -1,7 +1,13 @@
+<style>/*scoped是作用域问题,当前生效*/
+body{
+  background: #0a366a;
+}
+</style>
+
 <template>
 <div>
-  <div style="width: 800px; background-color: white; margin: 0 auto; padding: 50px 0 50px 0">
-  <h1>管理员登录</h1>
+  <div style="width: 600px; background: white; margin: 60px auto; padding: 30px">
+  <h1 style="text-align: center; margin: 30px auto">管理员登录</h1>
   <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
     <el-form-item label="用户名" prop="username">
       <el-input v-model="ruleForm.username"></el-input>
@@ -28,11 +34,11 @@ export default {
       },
       rules: { // 制定规则
         username: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { required: true, message: '请输入账号', trigger: 'blur' },
           { min: 4, max: 15, message: '长度在 4 到 15 个字符', trigger: 'blur' }
         ],
         password: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 4, max: 15, message: '长度在 4 到 15 个字符', trigger: 'blur' }
         ],
       }
@@ -55,9 +61,3 @@ export default {
   }
 }
 </script>
-
-<style>/*scoped是作用域问题,当前生效*/
-body{
-  background: darkslategrey;
-}
-</style>
