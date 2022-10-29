@@ -7,6 +7,9 @@
   text-align: left;
   line-height: 60px;
 }
+i{
+  color: white !important;
+}
 </style>
 
 <template>
