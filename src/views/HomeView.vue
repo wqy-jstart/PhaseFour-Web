@@ -7,6 +7,25 @@
   text-align: left;
   line-height: 60px;
 }
+.layout-aside{ /*左侧边栏*/
+  background-color: #2c3e50;
+}
+.layout-body{ /*下半区域*/
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.layout-main{ /*中间区域*/
+
+}
+.layout-aside i{
+  color: white !important;
+}
+.el-menu-item.is-active {
+  background: #0e0e0e !important;
+}
 </style>
 
 <template>
@@ -18,12 +37,12 @@
         <h1>酷鲨商城运营管理平台</h1>
       </el-header>
       <!-- 下半部分: 容器 -->
-      <el-container>
+      <el-container class="layout-body">
         <!-- 下半部分的左侧边栏 -->
-        <el-aside width="260px">
+        <el-aside width="260px" class="layout-aside">
           <el-menu
-              style="height: 1000px"
-              default-active="1"
+              router
+              :default-active="$router.currentRoute.path"
               class="el-menu-vertical-demo"
               background-color="#2c3e50"
               text-color="#fff"
@@ -37,51 +56,51 @@
                 <i class="el-icon-setting"></i>
                 <span>临时页面</span>
               </template>
-              <el-menu-item index="1-1">
+              <el-menu-item index="/sys-admin/temp/admin/add-new">
                 <i class="el-icon-setting"></i>
                 <span slot="title">添加管理员</span>
               </el-menu-item>
-              <el-menu-item index="1-2">
+              <el-menu-item index="/sys-admin/temp/admin/list">
                 <i class="el-icon-setting"></i>
                 <span slot="title">管理员列表</span>
               </el-menu-item>
-              <el-menu-item index="1-3">
+              <el-menu-item index="/sys-admin/temp/brand/add-new">
                 <i class="el-icon-setting"></i>
                 <span slot="title">添加品牌</span>
               </el-menu-item>
-              <el-menu-item index="1-4">
+              <el-menu-item index="/sys-admin/temp/brand/list">
                 <i class="el-icon-setting"></i>
                 <span slot="title">品牌列表</span>
               </el-menu-item>
-              <el-menu-item index="1-5">
+              <el-menu-item index="/sys-admin/temp/category/add-new">
                 <i class="el-icon-setting"></i>
                 <span slot="title">添加类别</span>
               </el-menu-item>
-              <el-menu-item index="1-6">
+              <el-menu-item index="/sys-admin/temp/category/list">
                 <i class="el-icon-setting"></i>
                 <span slot="title">类别列表</span>
               </el-menu-item>
-              <el-menu-item index="1-7">
+              <el-menu-item index="/sys-admin/temp/album/add-new">
                 <i class="el-icon-setting"></i>
                 <span slot="title">添加相册</span>
               </el-menu-item>
-              <el-menu-item index="1-8">
+              <el-menu-item index="/sys-admin/temp/album/list">
                 <i class="el-icon-setting"></i>
                 <span slot="title">相册列表</span>
               </el-menu-item>
-              <el-menu-item index="1-9">
+              <el-menu-item index="/sys-admin/temp/attributeTemplate/add-new">
                 <i class="el-icon-setting"></i>
                 <span slot="title">添加属性模板</span>
               </el-menu-item>
-              <el-menu-item index="1-10">
+              <el-menu-item index="/sys-admin/temp/attributeTemplate/list">
                 <i class="el-icon-setting"></i>
                 <span slot="title">属性模板列表</span>
               </el-menu-item>
-              <el-menu-item index="1-11">
+              <el-menu-item index="/sys-admin/temp/attribute/add-new">
                 <i class="el-icon-setting"></i>
                 <span slot="title">添加属性</span>
               </el-menu-item>
-              <el-menu-item index="1-12">
+              <el-menu-item index="/sys-admin/temp/attribute/list">
                 <i class="el-icon-setting"></i>
                 <span slot="title">属性列表</span>
               </el-menu-item>
@@ -143,7 +162,9 @@
           </el-menu>
         </el-aside>
         <!-- 下半部分的右侧主体部分 -->
-        <el-main></el-main>
+        <el-main class="layout-main">
+          <router-view/>
+        </el-main>
       </el-container>
     </el-container>
   </div>
