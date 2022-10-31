@@ -17,7 +17,7 @@
         <el-input v-model="ruleForm.sort"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -49,10 +49,18 @@ export default {
   },
   methods: {
     submitForm(formName) {
+      // 对表单进行检查
       this.$refs[formName].validate((valid) => {
-        if (valid) {
-          alert('submit!');
-        } else {
+        if (valid) { // 满足条件则通过验证
+          let url = 'http://localhost:9080/albums/add-new'
+          console.log('url = ' + url);
+          let formData = this.qs.stringify(this.ruleForm);//将formData对象转换成FormData格式,当后端不添加@RequestBody注解时接收
+          console.log('formData=' + formData);
+          this.axios.post(url, formData).then((response)=>{//箭头函数
+            let responseBody = response.data;
+            console.log('responseBody='+responseBody);//接收结果并输出
+          });
+        } else { // 否则表单格式有误,不会通过
           console.log('error submit!!');
           return false;
         }
