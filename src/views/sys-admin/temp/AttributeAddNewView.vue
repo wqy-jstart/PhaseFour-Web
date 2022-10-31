@@ -1,3 +1,9 @@
+<style>
+.right {
+  float: right;
+  width: 30px;
+}
+</style>
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size: 16px">
@@ -27,8 +33,20 @@
         <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
       <el-form-item label="类型" prop="type">
-        <el-radio v-model="radio" label="1">非销售属性</el-radio>
-        <el-radio v-model="radio" label="2">销售属性</el-radio>
+        <el-radio v-model="radio" label="1">非销售属性
+          <div class="right">
+            <el-tooltip class="item" effect="dark" content="0=销售属性" placement="right">
+              <i class="el-icon-info"></i>
+            </el-tooltip>
+          </div>
+        </el-radio>
+        <el-radio v-model="radio" label="2">销售属性
+          <div class="right">
+            <el-tooltip class="item" effect="dark" content="0=销售属性" placement="right">
+              <i class="el-icon-info"></i>
+            </el-tooltip>
+          </div>
+        </el-radio>
       </el-form-item>
       <el-form-item label="输入类型" prop="inputType">
         <el-radio v-model="radio1" label="1">手动录入</el-radio>
