@@ -6,7 +6,7 @@
     </el-breadcrumb>
     <el-divider></el-divider>
 
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm">
       <el-form-item label="名称" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
@@ -58,7 +58,15 @@ export default {
           console.log('formData=' + formData);
           this.axios.post(url, formData).then((response)=>{//箭头函数
             let responseBody = response.data;
-            console.log('responseBody='+responseBody);//接收结果并输出
+            if (responseBody.state == 1){
+              this.$message({
+                message: responseBody.message,
+                type: 'success'
+              });
+              this.resetForm(formName);// 调用该函数重置表单中的信息
+            }else {
+              this.$message.error(responseBody.message);
+            }
           });
         } else { // 否则表单格式有误,不会通过
           console.log('error submit!!');
@@ -66,7 +74,7 @@ export default {
         }
       });
     },
-    resetForm(formName) {
+    resetForm(formName) { // 该方法用来重置表单中的信息
       this.$refs[formName].resetFields();
     }
   }
