@@ -58,9 +58,11 @@ export default {
           console.log('formData=' + formData);
           this.axios.post(url, formData).then((response)=>{//箭头函数
             let responseBody = response.data;
-            if (responseBody.state == 1){
+            console.log('responseBody = ');
+            console.log(responseBody);
+            if (responseBody.state == 20000){
               this.$message({
-                message: responseBody.message,
+                message: '添加相册成功！',
                 type: 'success'
               });
               this.resetForm(formName);// 调用该函数重置表单中的信息
