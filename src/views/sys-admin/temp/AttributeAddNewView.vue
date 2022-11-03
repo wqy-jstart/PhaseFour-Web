@@ -15,14 +15,14 @@
 
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm">
       <el-form-item label="属性模板" prop="templateId">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="ruleForm.templateId" placeholder="请选择">
           <el-option
-              v-for="item in cities"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            <span style="float: left">{{ item.label }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
+              v-for="item in attributeTemplateListOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            <span style="float: left">{{ item.name }}</span>
+            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.id }}</span>
           </el-option>
         </el-select>
       </el-form-item>
@@ -33,27 +33,29 @@
         <el-input v-model="ruleForm.description"></el-input>
       </el-form-item>
       <el-form-item label="类型" prop="type">
-        <el-radio v-model="radio" label="1">非销售属性
-          <div class="right">
-            <el-tooltip class="item" effect="dark" content="0=销售属性" placement="right">
-              <i class="el-icon-info"></i>
-            </el-tooltip>
-          </div>
-        </el-radio>
-        <el-radio v-model="radio" label="2">销售属性
-          <div class="right">
-            <el-tooltip class="item" effect="dark" content="0=销售属性" placement="right">
-              <i class="el-icon-info"></i>
-            </el-tooltip>
-          </div>
-        </el-radio>
+        <template>
+          <el-radio-group v-model="ruleForm.type">
+            <el-radio :label="0">非销售属性
+              <el-tooltip class="item" effect="dark" content="对商品销售不产生影响，但应补充说明的属性，例如：手机的产地" placement="top">
+                <i class="el-icon-info" style="color: #aaa"></i>
+              </el-tooltip>
+            </el-radio>
+            <el-radio :label="1">销售属性<el-tooltip class="item" effect="dark" content="必须确定属性的值才可以进行商品销售的属性，例如：手机的内存容量" placement="top">
+              <i class="el-icon-info" style="color: #aaa"></i>
+            </el-tooltip></el-radio>
+          </el-radio-group>
+        </template>
       </el-form-item>
       <el-form-item label="输入类型" prop="inputType">
-        <el-radio v-model="radio1" label="1">手动录入</el-radio>
-        <el-radio v-model="radio1" label="2">单选</el-radio>
-        <el-radio v-model="radio1" label="3">多选</el-radio>
-        <el-radio v-model="radio1" label="4">单选(下拉列表)</el-radio>
-        <el-radio v-model="radio1" label="5">多选(下拉列表)</el-radio>
+        <template>
+          <el-radio-group v-model="ruleForm.inputType">
+            <el-radio :label="0">手动录入</el-radio>
+            <el-radio :label="1">单选</el-radio>
+            <el-radio :label="2">多选</el-radio>
+            <el-radio :label="3">单选（下拉列表）</el-radio>
+            <el-radio :label="4">多选（下拉列表）</el-radio>
+          </el-radio-group>
+        </template>
       </el-form-item>
       <el-form-item label="备选值列表" prop="valueList">
         <el-input v-model="ruleForm.valueList"></el-input>
@@ -75,31 +77,15 @@
 export default {
   data() {
     return {
-      cities: [{
-        value: 'Beijing',
-        label: '北京'
-      }, {
-        value: 'Shanghai',
-        label: '上海'
-      }, {
-        value: 'Nanjing',
-        label: '南京'
-      }, {
-        value: 'Chengdu',
-        label: '成都'
-      }, {
-        value: 'Shenzhen',
-        label: '深圳'
-      }, {
-        value: 'Guangzhou',
-        label: '广州'
-      }],
+      attributeTemplateListOptions: [],
       radio: '1',
       radio1: '1',
-      value: '',
       ruleForm: {
+        templateId: '',
         name: '',
         description: '',
+        type: 0,
+        inputType: 0,
         valueList: '',
         unit: '',
         sort: ''
@@ -117,11 +103,36 @@ export default {
     };
   },
   methods: {
+    loadAttributeTemplateList() {
+      let url = 'http://localhost:9080/AttributeTemplates';
+      console.log('url='+url);
+      this.axios.get(url).then((response)=>{
+        let responseBody = response.data;
+        this.attributeTemplateListOptions = responseBody.data;
+      })
+    }, 
     submitForm(formName) {
       // 对表单进行检查
       this.$refs[formName].validate((valid) => {
         if (valid) { // 满足条件则通过验证
-
+          let url = 'http://localhost:9080/attributes/add-New'
+          console.log('url = ' + url);
+          let formData = this.qs.stringify(this.ruleForm);//将formData对象转换成FormData格式,当后端不添加@RequestBody注解时接收
+          console.log('formData=' + formData);
+          this.axios.post(url, formData).then((response)=>{//箭头函数
+            let responseBody = response.data;
+            console.log('responseBody = ');
+            console.log(responseBody);
+            if (responseBody.state == 20000){
+              this.$message({
+                message: '添加相册成功！',
+                type: 'success'
+              });
+              this.resetForm(formName);// 调用该函数重置表单中的信息
+            }else {
+              this.$message.error(responseBody.message);
+            }
+          });
         } else { // 否则表单格式有误,不会通过
           console.log('error submit!!');
           return false;
@@ -131,6 +142,9 @@ export default {
     resetForm(formName) { // 该方法用来重置表单中的信息
       this.$refs[formName].resetFields();
     }
+  },
+  mounted() {
+    this.loadAttributeTemplateList();
   }
 }
 </script>

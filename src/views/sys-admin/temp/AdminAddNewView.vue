@@ -31,22 +31,24 @@
       </el-form-item>
       <el-form-item label="是否启用" prop="enable">
         <el-switch
-            v-model="value1"
+            v-model="ruleForm.enable"
+            :active-value="1"
+            :inactive-value="0"
             active-color="#13ce66"
-            inactive-color="#ff4949">
+            inactive-color="#aaaaaa">
         </el-switch>
       </el-form-item>
-      <el-form-item label="角色" prop="role">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-              v-for="item in roles"
-              :label="item.label"
-              :value="item.value">
-            <span style="float: left">{{ item.label }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>
-          </el-option>
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="角色" prop="role">-->
+<!--        <el-select v-model="value" placeholder="请选择">-->
+<!--          <el-option-->
+<!--              v-for="item in roles"-->
+<!--              :label="item.label"-->
+<!--              :value="item.value">-->
+<!--            <span style="float: left">{{ item.label }}</span>-->
+<!--            <span style="float: right; color: #8492a6; font-size: 13px">{{ item.value }}</span>-->
+<!--          </el-option>-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -59,27 +61,26 @@
 export default {
   data() {
     return {
-      roles: [{
-        value: 'Beijing',
-        label: '北京'
-      }, {
-        value: 'Shanghai',
-        label: '上海'
-      }, {
-        value: 'Nanjing',
-        label: '南京'
-      }, {
-        value: 'Chengdu',
-        label: '成都'
-      }, {
-        value: 'Shenzhen',
-        label: '深圳'
-      }, {
-        value: 'Guangzhou',
-        label: '广州'
-      }],
-      value1:true,
-      value: '',
+      // roles: [{
+      //   value: 'Beijing',
+      //   label: '北京'
+      // }, {
+      //   value: 'Shanghai',
+      //   label: '上海'
+      // }, {
+      //   value: 'Nanjing',
+      //   label: '南京'
+      // }, {
+      //   value: 'Chengdu',
+      //   label: '成都'
+      // }, {
+      //   value: 'Shenzhen',
+      //   label: '深圳'
+      // }, {
+      //   value: 'Guangzhou',
+      //   label: '广州'
+      // }],
+      // value: '',
       ruleForm: {
         username:'',
         password:'',
@@ -87,13 +88,13 @@ export default {
         description:'',
         phone:'',
         email:'',
-        avatat:'',
-        enable:'',
+        avatar:'',
+        enable:0,
       },
       rules: {
         username: [
           {required: true, message: '请输入用户名', trigger: 'blur'},
-          {min: 4, max: 35, message: '长度在 4 到 35 个字符', trigger: 'blur'}
+          {min: 2, max: 15, message: '长度在 2 到 15 个字符', trigger: 'blur'}
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},
@@ -114,9 +115,9 @@ export default {
         enable: [
           {required: true, message: '请选择是否启用', trigger: 'blur'},
         ],
-        role: [
-          {required: true, message: '请选择角色', trigger: 'blur'},
-        ],
+        // role: [
+        //   {required: true, message: '请选择角色', trigger: 'blur'},
+        // ],
       }
     };
   },
@@ -125,7 +126,24 @@ export default {
       // 对表单进行检查
       this.$refs[formName].validate((valid) => {
         if (valid) { // 满足条件则通过验证
-
+          let url = 'http://localhost:9081/admins/add-new'
+          console.log('url = ' + url);
+          let formData = this.qs.stringify(this.ruleForm);//将formData对象转换成FormData格式,当后端不添加@RequestBody注解时接收
+          console.log('formData=' + formData);
+          this.axios.post(url, formData).then((response)=>{//箭头函数
+            let responseBody = response.data;
+            console.log('responseBody = ');
+            console.log(responseBody);
+            if (responseBody.state == 20000){
+              this.$message({
+                message: '添加管理员成功！',
+                type: 'success'
+              });
+              this.resetForm(formName);// 调用该函数重置表单中的信息
+            }else {
+              this.$message.error(responseBody.message);
+            }
+          });
         } else { // 否则表单格式有误,不会通过
           console.log('error submit!!');
           return false;
