@@ -19,7 +19,20 @@
       <el-table-column prop="productCount" label="商品产量" width="80" align="center"></el-table-column>
       <el-table-column prop="commentCount" label="评论数量" width="80" align="center"></el-table-column>
       <el-table-column prop="positiveCommentCount" label="好评数量" width="80" align="center"></el-table-column>
-      <el-table-column prop="enable" label="是否启用" width="80" align="center"></el-table-column>
+      <el-table-column label="是否启用" width="80" align="center">
+        <template slot-scope="scope">
+          <!-- 1开 0关 -->
+          <el-switch
+              @change="changeEnable(scope.row)"
+              v-model="scope.row.enable"
+              :disabled="scope.row.id == 1"
+              :active-value="1"
+              :inactive-value="0"
+              active-color="#13ce66"
+              inactive-color="#aaaaaa">
+          </el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" circle size="mini"
@@ -39,6 +52,36 @@ export default {
     }
   },
   methods: {
+    changeEnable(brand) {
+      console.log('brand id=' + brand.id);
+      //点击后获取的enable值
+      console.log('brand enable=' + brand.enable);
+      let enableText = ['禁用', '启用'];
+      let url = 'http://localhost:9080/brands/' + brand.id;
+      if (brand.enable == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
+        console.log("启用品牌")
+        url += '/enable';
+      } else {
+        console.log("禁用品牌")
+        url += '/disable';
+      }
+      console.log('url=' + url)
+      this.axios.post(url).then((response) => {
+        let responseBody = response.data;
+        if (responseBody.state == 20000) {
+          let message = '将品牌[' + brand.username + ']的启用状态改为[' + enableText[brand.enable] + ']成功!';
+          this.$message({
+            message: message,
+            type: 'success'
+          });
+        } else { // 否则输出错误信息
+          this.$message.error(responseBody.message);
+        }
+        if (responseBody.state == 40400) { // 数据不存在的时候才刷新
+          this.loadAlbumList();
+        }
+      })
+    },
     handleEdit(brand) {
       let message = '您正在尝试编辑【' + brand.id + '-' + brand.name + '】的相册详情，抱歉，该功能尚未实现……';
       this.$alert(message, '提示', {

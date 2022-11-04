@@ -8,23 +8,25 @@
     <el-divider></el-divider>
 
     <el-table :data="tableData" border style="width: 100%">
-         <!-- prop必须是服务器绑定的属性名 -->
+      <!-- prop必须是服务器绑定的属性名 -->
       <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
       <el-table-column prop="username" label="用户名" width="120" align="center"></el-table-column>
       <el-table-column prop="nickname" label="昵称" width="120" align="center"></el-table-column>
       <el-table-column label="头像url">
         <template slot-scope="scope">
-        <img :src="scope.row.avatar" width="120" height="120" alt="">
+          <img :src="scope.row.avatar" width="120" height="120" alt="">
         </template>
       </el-table-column>
       <el-table-column prop="phone" label="手机号码" width="120" align="center"></el-table-column>
       <el-table-column prop="email" label="电子邮箱" width="180" align="center"></el-table-column>
       <el-table-column prop="description" label="管理员简介" header-align="center"></el-table-column>
-      <el-table-column label="是否启用" width="80" align="center" @click="updateEnableById()">
+      <el-table-column label="是否启用" width="80" align="center">
         <template slot-scope="scope">
           <!-- 1开 0关 -->
           <el-switch
+              @change="changeEnable(scope.row)"
               v-model="scope.row.enable"
+              :disabled="scope.row.id == 1"
               :active-value="1"
               :inactive-value="0"
               active-color="#13ce66"
@@ -56,8 +58,35 @@ export default {
     }
   },
   methods: {
-    updateEnableById(){
-
+    changeEnable(admin) {
+      console.log('admin id=' + admin.id);
+      //点击后获取的enable值
+      console.log('admin enable=' + admin.enable);
+      let enableText = ['禁用', '启用'];
+      let url = 'http://localhost:9081/admins/' + admin.id;
+      if (admin.enable == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
+        console.log("启用管理员")
+        url += '/enable';
+      } else {
+        console.log("禁用管理员")
+        url += '/disable';
+      }
+      console.log('url=' + url)
+      this.axios.post(url).then((response) => {
+        let responseBody = response.data;
+        if (responseBody.state == 20000) {
+          let message = '将管理员[' + admin.username + ']的启用状态改为[' + enableText[admin.enable] + ']成功!';
+          this.$message({
+            message: message,
+            type: 'success'
+          });
+        } else { // 否则输出错误信息
+          this.$message.error(responseBody.message);
+        }
+        if (responseBody.state == 40400) { // 数据不存在的时候才刷新
+          this.loadAlbumList();
+        }
+      })
     },
     handleEdit(admin) {
       let message = '您正在尝试编辑【' + admin.id + '-' + admin.username + '】的相册详情，抱歉，该功能尚未实现……';
