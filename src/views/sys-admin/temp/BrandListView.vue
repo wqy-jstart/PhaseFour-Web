@@ -25,7 +25,6 @@
           <el-switch
               @change="changeEnable(scope.row)"
               v-model="scope.row.enable"
-              :disabled="scope.row.id == 1"
               :active-value="1"
               :inactive-value="0"
               active-color="#13ce66"

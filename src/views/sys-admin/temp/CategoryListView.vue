@@ -21,7 +21,6 @@
           <el-switch
               @change="changeEnable(scope.row)"
               v-model="scope.row.enable"
-              :disabled="scope.row.id == 1"
               :active-value="1"
               :inactive-value="0"
               active-color="#13ce66"
@@ -36,7 +35,6 @@
           <el-switch
               @change="changeDisplay(scope.row)"
               v-model="scope.row.isDisplay"
-              :disabled="scope.row.id == 1"
               :active-value="1"
               :inactive-value="0"
               active-color="#13ce66"
@@ -47,10 +45,8 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" circle size="mini"
-                     :disabled="scope.row.id == 1"
                      @click="handleEdit(scope.row)"></el-button>
           <el-button type="danger" icon="el-icon-delete" circle size="mini"
-                     :disabled="scope.row.id == 1"
                      @click="openDeleteConfirm(scope.row)"></el-button>
         </template>
       </el-table-column>
@@ -69,20 +65,20 @@ export default {
       console.log('category id=' + category.id);
       //点击后获取的enable值
       console.log('category isDisplay=' + category.isDisplay);
-      let enableText = ['禁用', '启用'];
-      let url = 'http://localhost:9081/categorys/' + category.id;
-      if (category.enable == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
-        console.log("启用管理员")
-        url += '/enable';
+      let enableText = ['显示', '隐藏'];
+      let url = 'http://localhost:9080/categorys/' + category.id;
+      if (category.isDisplay == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
+        console.log("显示类别")
+        url += '/display';
       } else {
-        console.log("禁用管理员")
-        url += '/disable';
+        console.log("隐藏类别")
+        url += '/hidden';
       }
       console.log('url=' + url)
       this.axios.post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state == 20000) {
-          let message = '将管理员[' + category.username + ']的启用状态改为[' + enableText[category.enable] + ']成功!';
+          let message = '将类别[' + category.username + ']的显示状态改为[' + enableText[category.isDisplay] + ']成功!';
           this.$message({
             message: message,
             type: 'success'
@@ -100,19 +96,19 @@ export default {
       //点击后获取的enable值
       console.log('category enable=' + category.enable);
       let enableText = ['禁用', '启用'];
-      let url = 'http://localhost:9081/categorys/' + category.id;
+      let url = 'http://localhost:9080/categorys/' + category.id;
       if (category.enable == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
-        console.log("启用管理员")
+        console.log("启用类别")
         url += '/enable';
       } else {
-        console.log("禁用管理员")
+        console.log("禁用类别")
         url += '/disable';
       }
       console.log('url=' + url)
       this.axios.post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state == 20000) {
-          let message = '将管理员[' + category.username + ']的启用状态改为[' + enableText[category.enable] + ']成功!';
+          let message = '将类别[' + category.username + ']的启用状态改为[' + enableText[category.enable] + ']成功!';
           this.$message({
             message: message,
             type: 'success'
