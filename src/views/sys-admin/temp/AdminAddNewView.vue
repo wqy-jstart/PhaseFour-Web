@@ -70,7 +70,7 @@ export default {
         description: 'nothing',
         phone: '15551898017',
         email: '2168149199@qq.com',
-        avatar: '3214435jfgkgjoe',
+        avatar: 'https://img2.baidu.com/it/u=4244269751,4000533845&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
         enable: 0,
       },
       rules: {
