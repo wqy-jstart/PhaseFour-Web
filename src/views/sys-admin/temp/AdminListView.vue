@@ -72,7 +72,13 @@ export default {
         url += '/disable';
       }
       console.log('url=' + url)
-      this.axios.post(url).then((response) => {
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          })
+          .post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state == 20000) {
           let message = '将管理员[' + admin.username + ']的启用状态改为[' + enableText[admin.enable] + ']成功!';
@@ -97,7 +103,13 @@ export default {
     handleDelete(admin) {
       let url = 'http://localhost:9081/admins/' + admin.id + '/delete';
       console.log('url=' + url);
-      this.axios.post(url).then((response) => {
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          })
+          .post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state != 20000) {
           this.$message.error(responseBody.message);
@@ -125,9 +137,17 @@ export default {
     // 该方法用来请求相册的列表数据
     loadAdminList() {
       console.log('loadAdminList');
+      console.log('在localStorage中的JWT数据:' + localStorage.getItem('jwt'))
       let url = "http://localhost:9081/admins" // 请求路径
       console.log('url=' + url);
-      this.axios.get(url).then((response) => {// 发送异步请求
+      // .create方法会返回一个axios对象,可在其中配置请求头
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          })
+          .get(url).then((response) => {// 发送异步请求
         let responseBody = response.data;
         this.tableData = responseBody.data;//将获取响应的数据中的data数据赋值给tableData
       })

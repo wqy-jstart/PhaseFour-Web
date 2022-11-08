@@ -106,15 +106,23 @@ export default {
     };
   },
   methods: {
+    // 获取角色列表
     loadRoleList() {
       console.log('loadRoleList');
       let url = "http://localhost:9081/roles" // 请求路径
       console.log('url=' + url);
-      this.axios.get(url).then((response) => {// 发送异步请求
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          })
+          .get(url).then((response) => {// 发送异步请求
         let responseBody = response.data;
         this.roleListOptions = responseBody.data;//将获取响应的数据中的data数据赋值给tableData
       })
     },
+    // 添加管理员事件
     submitForm(formName) {
       // 对表单进行检查
       this.$refs[formName].validate((valid) => {
@@ -124,7 +132,13 @@ export default {
           //将formData对象转换成FormData格式,当后端不添加@RequestBody注解时接收    {indices、brackets、repeat}数组格式
           let formData = this.qs.stringify(this.ruleForm,{arrayFormat:'repeat'});
           console.log('formData=' + formData);
-          this.axios.post(url, formData).then((response) => {//箭头函数
+          this.axios
+              .create({
+                'headers':{
+                  'Authorization':localStorage.getItem('jwt')
+                }
+              })
+              .post(url, formData).then((response) => {//箭头函数
             let responseBody = response.data;
             console.log('responseBody = ');
             console.log(responseBody);
