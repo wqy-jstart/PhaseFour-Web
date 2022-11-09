@@ -58,6 +58,7 @@ export default {
     }
   },
   methods: {
+    // 改变管理员状态
     changeEnable(admin) {
       console.log('admin id=' + admin.id);
       //点击后获取的enable值
@@ -94,12 +95,14 @@ export default {
         }
       })
     },
+    // 编辑管理员(未开发)
     handleEdit(admin) {
       let message = '您正在尝试编辑【' + admin.id + '-' + admin.username + '】的相册详情，抱歉，该功能尚未实现……';
       this.$alert(message, '提示', {
         confirmButtonText: '确定'
       });
     },
+    // 根据id删除管理员
     handleDelete(admin) {
       let url = 'http://localhost:9081/admins/' + admin.id + '/delete';
       console.log('url=' + url);
