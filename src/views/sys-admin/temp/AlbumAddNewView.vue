@@ -56,7 +56,12 @@ export default {
           console.log('url = ' + url);
           let formData = this.qs.stringify(this.ruleForm);//将formData对象转换成FormData格式,当后端不添加@RequestBody注解时接收
           console.log('formData=' + formData);
-          this.axios.post(url, formData).then((response)=>{//箭头函数
+          this.axios
+              .create({
+                'headers':{
+                  'Authorization':localStorage.getItem('jwt')
+                }
+              }).post(url, formData).then((response)=>{//箭头函数
             let responseBody = response.data;
             console.log('responseBody = ');
             console.log(responseBody);

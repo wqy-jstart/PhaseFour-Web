@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     handleEdit(attribute) {
-      let message = '您正在尝试编辑【' + attribute.id + '-' + attribute.name + '】的相册详情，抱歉，该功能尚未实现……';
+      let message = '您正在尝试编辑【' + attribute.id + '-' + attribute.name + '】的属性详情，抱歉，该功能尚未实现……';
       this.$alert(message, '提示', {
         confirmButtonText: '确定'
       });
@@ -46,7 +46,12 @@ export default {
     handleDelete(attribute) {
       let url = 'http://localhost:9080/attributes/' + attribute.id + '/delete';
       console.log('url=' + url);
-      this.axios.post(url).then((response) => {
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          }).post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state != 20000) {
           this.$message.error(responseBody.message);
@@ -57,7 +62,7 @@ export default {
       });
     },
     openDeleteConfirm(attribute) {
-      let message = '此操作将永久删除[' + attribute.name + ']相册, 是否继续?'
+      let message = '此操作将永久删除[' + attribute.name + ']属性, 是否继续?'
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -76,7 +81,12 @@ export default {
       console.log('loadAttributeList');
       let url = "http://localhost:9080/attributes" // 请求路径
       console.log('url=' + url);
-      this.axios.get(url).then((response) => {// 发送异步请求
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          }).get(url).then((response) => {// 发送异步请求
         let responseBody = response.data;
         this.tableData = responseBody.data;//将获取响应的数据中的data数据赋值给tableData
       })

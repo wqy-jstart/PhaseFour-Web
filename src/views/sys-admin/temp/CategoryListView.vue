@@ -61,7 +61,7 @@ export default {
     }
   },
   methods: {
-    changeDisplay(category){
+    changeDisplay(category) {
       console.log('category id=' + category.id);
       //点击后获取的enable值
       console.log('category isDisplay=' + category.isDisplay);
@@ -75,7 +75,13 @@ export default {
         url += '/hidden';
       }
       console.log('url=' + url)
-      this.axios.post(url).then((response) => {
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          })
+      .post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state == 20000) {
           let message = '将类别[' + category.username + ']的显示状态改为[' + enableText[category.isDisplay] + ']成功!';
@@ -87,7 +93,7 @@ export default {
           this.$message.error(responseBody.message);
         }
         if (responseBody.state == 40400) { // 数据不存在的时候才刷新
-          this.loadAlbumList();
+          this.loadCategoryList();
         }
       })
     },
@@ -105,7 +111,13 @@ export default {
         url += '/disable';
       }
       console.log('url=' + url)
-      this.axios.post(url).then((response) => {
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          })
+          .post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state == 20000) {
           let message = '将类别[' + category.username + ']的启用状态改为[' + enableText[category.enable] + ']成功!';
@@ -117,7 +129,7 @@ export default {
           this.$message.error(responseBody.message);
         }
         if (responseBody.state == 40400) { // 数据不存在的时候才刷新
-          this.loadAlbumList();
+          this.loadCategoryList();
         }
       })
     },
@@ -128,9 +140,15 @@ export default {
       });
     },
     handleDelete(category) {
-      let url = 'http://localhost:9081/categorys/' + category.id + '/delete';
+      let url = 'http://localhost:9080/categorys/' + category.id + '/delete';
       console.log('url=' + url);
-      this.axios.post(url).then((response) => {
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          })
+          .post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state != 20000) {
           this.$message.error(responseBody.message);
@@ -141,7 +159,7 @@ export default {
       });
     },
     openDeleteConfirm(category) {
-      let message = '此操作将永久删除[' + category.username + ']管理员, 是否继续?'
+      let message = '此操作将永久删除[' + category.username + ']类别, 是否继续?'
       this.$confirm(message, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -160,7 +178,13 @@ export default {
       console.log('loadCategoryList');
       let url = "http://localhost:9080/categorys" // 请求路径
       console.log('url=' + url);
-      this.axios.get(url).then((response) => {// 发送异步请求
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          })
+          .get(url).then((response) => {// 发送异步请求
         let responseBody = response.data;
         this.tableData = responseBody.data;//将获取响应的数据中的data数据赋值给tableData
       })

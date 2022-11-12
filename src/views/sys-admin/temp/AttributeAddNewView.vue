@@ -106,7 +106,12 @@ export default {
     loadAttributeTemplateList() {
       let url = 'http://localhost:9080/AttributeTemplates';
       console.log('url='+url);
-      this.axios.get(url).then((response)=>{
+      this.axios
+          .create({
+            'headers':{
+              'Authorization':localStorage.getItem('jwt')
+            }
+          }).get(url).then((response)=>{
         let responseBody = response.data;
         this.attributeTemplateListOptions = responseBody.data;
       })
@@ -119,13 +124,18 @@ export default {
           console.log('url = ' + url);
           let formData = this.qs.stringify(this.ruleForm);//将formData对象转换成FormData格式,当后端不添加@RequestBody注解时接收
           console.log('formData=' + formData);
-          this.axios.post(url, formData).then((response)=>{//箭头函数
+          this.axios
+              .create({
+                'headers':{
+                  'Authorization':localStorage.getItem('jwt')
+                }
+              }).post(url, formData).then((response)=>{//箭头函数
             let responseBody = response.data;
             console.log('responseBody = ');
             console.log(responseBody);
             if (responseBody.state == 20000){
               this.$message({
-                message: '添加相册成功！',
+                message: '添加属性成功！',
                 type: 'success'
               });
               this.resetForm(formName);// 调用该函数重置表单中的信息
