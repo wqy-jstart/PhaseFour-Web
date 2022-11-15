@@ -1,7 +1,8 @@
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size: 16px">
-      <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
+      <el-breadcrumb-item :to="{ path: '/sys-admin' }">
+        <i class="el-icon-s-promotion"></i> 后台管理</el-breadcrumb-item>
       <el-breadcrumb-item>类别列表</el-breadcrumb-item>
       <el-breadcrumb-item v-for="item in history"><span v-text="item.name"></span></el-breadcrumb-item>
     </el-breadcrumb>
@@ -62,7 +63,7 @@
       </el-table-column>
     </el-table>
     <el-button style="margin-top: 10px;float: right;"
-               v-if ="tableData[0].depth != 1"
+               v-if ="currentDepth != 1"
                @click="goBack()">返回
     </el-button>
   </div>
@@ -214,8 +215,11 @@ export default {
             }
           })
           .get(url).then((response) => {// 发送异步请求
-        let responseBody = response.data;
-        this.tableData = responseBody.data;//将获取响应的数据中的data数据赋值给tableData
+        if (responseBody.state == 20000) {
+          this.tableData = responseBody.data;//将获取响应的数据中的data数据赋值给tableData
+        } else {
+          this.$message.error(responseBody.message);
+        }
       })
     }
   },
