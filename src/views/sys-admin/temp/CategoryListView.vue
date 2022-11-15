@@ -3,6 +3,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size: 16px">
       <el-breadcrumb-item :to="{ path: '/' }">后台管理</el-breadcrumb-item>
       <el-breadcrumb-item>类别列表</el-breadcrumb-item>
+      <el-breadcrumb-item v-for="item in history"><span v-text="item.name"></span></el-breadcrumb-item>
     </el-breadcrumb>
 
     <el-divider></el-divider>
@@ -10,6 +11,7 @@
     <el-table :data="tableData" border style="width: 100%">
       <!-- prop必须是服务器绑定的属性名 -->
       <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
+      <el-table-column prop="name" label="名称" width="120" align="center"></el-table-column>
       <el-table-column prop="parentId" label="父级类别id" width="120" align="center"></el-table-column>
       <el-table-column prop="depth" label="深度" width="120" align="center"></el-table-column>
       <el-table-column prop="keywords" label="关键字" width="120" align="center"></el-table-column>
@@ -42,31 +44,59 @@
           </el-switch>
         </template>
       </el-table-column>
+      <el-table-column label="查看子级" width="100" align="center">
+        <template slot-scope="scope">
+          <el-button size="mini" :disabled="scope.row.isParent == 0 "
+                     @click="showSubCategories(scope.row)">查看子级
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" circle size="mini"
                      @click="handleEdit(scope.row)"></el-button>
           <el-button type="danger" icon="el-icon-delete" circle size="mini"
+                     :disabled="scope.row.isParent == 1"
                      @click="openDeleteConfirm(scope.row)"></el-button>
         </template>
       </el-table-column>
     </el-table>
+    <el-button style="margin-top: 10px;float: right;"
+               v-if ="tableData[0].depth != 1"
+               @click="goBack()">返回
+    </el-button>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
+      history: [],
+      currentDepth: 1,
+      currentParentId: 0,
+      displayText: ['不显示在导航栏', '显示在导航栏'],
+      enableText: ['禁用', '启用'],
       tableData: []
     }
   },
   methods: {
+    goBack() {
+      let parentCategory = this.history[--this.currentDepth - 1];
+      this.currentParentId = parentCategory.parentId;
+      this.history.pop();
+      this.loadCategoryList();
+    },
+    showSubCategories(category) {
+      this.history[this.currentDepth - 1] = category;
+      this.currentDepth++;
+      this.currentParentId = category.id;
+      this.loadCategoryList()
+    },
     changeDisplay(category) {
       console.log('category id=' + category.id);
       //点击后获取的enable值
       console.log('category isDisplay=' + category.isDisplay);
-      let enableText = ['显示', '隐藏'];
-      let url = 'http://localhost:9080/categorys/' + category.id;
+      let url = 'http://localhost:9080/categories/' + category.id;
       if (category.isDisplay == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
         console.log("显示类别")
         url += '/display';
@@ -77,14 +107,14 @@ export default {
       console.log('url=' + url)
       this.axios
           .create({
-            'headers':{
-              'Authorization':localStorage.getItem('jwt')
+            'headers': {
+              'Authorization': localStorage.getItem('jwt')
             }
           })
-      .post(url).then((response) => {
+          .post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state == 20000) {
-          let message = '将类别[' + category.username + ']的显示状态改为[' + enableText[category.isDisplay] + ']成功!';
+          let message = '将类别[' + category.username + ']的显示状态改为[' + this.displayText[category.isDisplay] + ']成功!';
           this.$message({
             message: message,
             type: 'success'
@@ -101,8 +131,7 @@ export default {
       console.log('category id=' + category.id);
       //点击后获取的enable值
       console.log('category enable=' + category.enable);
-      let enableText = ['禁用', '启用'];
-      let url = 'http://localhost:9080/categorys/' + category.id;
+      let url = 'http://localhost:9080/categories/' + category.id;
       if (category.enable == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
         console.log("启用类别")
         url += '/enable';
@@ -113,14 +142,14 @@ export default {
       console.log('url=' + url)
       this.axios
           .create({
-            'headers':{
-              'Authorization':localStorage.getItem('jwt')
+            'headers': {
+              'Authorization': localStorage.getItem('jwt')
             }
           })
           .post(url).then((response) => {
         let responseBody = response.data;
         if (responseBody.state == 20000) {
-          let message = '将类别[' + category.username + ']的启用状态改为[' + enableText[category.enable] + ']成功!';
+          let message = '将类别[' + category.username + ']的启用状态改为[' + this.enableText[category.enable] + ']成功!';
           this.$message({
             message: message,
             type: 'success'
@@ -140,12 +169,12 @@ export default {
       });
     },
     handleDelete(category) {
-      let url = 'http://localhost:9080/categorys/' + category.id + '/delete';
+      let url = 'http://localhost:9080/categories/' + category.id + '/delete';
       console.log('url=' + url);
       this.axios
           .create({
-            'headers':{
-              'Authorization':localStorage.getItem('jwt')
+            'headers': {
+              'Authorization': localStorage.getItem('jwt')
             }
           })
           .post(url).then((response) => {
@@ -176,12 +205,12 @@ export default {
     // 该方法用来请求相册的列表数据
     loadCategoryList() {
       console.log('loadCategoryList');
-      let url = "http://localhost:9080/categorys" // 请求路径
+      let url = "http://localhost:9080/categories/list-by-parent?parentId=" + this.currentParentId // 请求路径
       console.log('url=' + url);
       this.axios
           .create({
-            'headers':{
-              'Authorization':localStorage.getItem('jwt')
+            'headers': {
+              'Authorization': localStorage.getItem('jwt')
             }
           })
           .get(url).then((response) => {// 发送异步请求
