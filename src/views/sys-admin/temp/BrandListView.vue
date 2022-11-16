@@ -16,7 +16,7 @@
       <el-table-column prop="keywords" label="品牌关键字" width="100" align="center"></el-table-column>
       <el-table-column prop="sort" label="品牌排序" width="100" align="center"></el-table-column>
       <el-table-column prop="sales" label="品牌价格" width="80" align="center"></el-table-column>
-      <el-table-column prop="productCount" label="商品产量" width="80" align="center"></el-table-column>
+      <el-table-column prop="productCount" label="品牌产量" width="80" align="center"></el-table-column>
       <el-table-column prop="commentCount" label="评论数量" width="80" align="center"></el-table-column>
       <el-table-column prop="positiveCommentCount" label="好评数量" width="80" align="center"></el-table-column>
       <el-table-column label="是否启用" width="80" align="center">
@@ -41,16 +41,100 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <!-- 弹出的编辑相册的对话框 -->
+    <el-dialog title="修改相册" :visible.sync="dialogFormVisible">
+      <el-form :model="ruleForm">
+        <el-form-item label="品牌名称" :label-width="formLabelWidth">
+          <el-input v-model="ruleForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="品牌拼音" :label-width="formLabelWidth">
+          <el-input v-model="ruleForm.pinyin" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="品牌Logo" :label-width="formLabelWidth">
+          <el-input v-model="ruleForm.logo" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="品牌描述" :label-width="formLabelWidth">
+          <el-input v-model="ruleForm.description" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="品牌关键字" :label-width="formLabelWidth">
+          <el-input v-model="ruleForm.keywords" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="品牌排序" :label-width="formLabelWidth">
+          <el-input v-model="ruleForm.sort" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="品牌价格" :label-width="formLabelWidth">
+          <el-input v-model="ruleForm.sales" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitEdit()">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      tableData: []
+      tableData: [],
+      dialogFormVisible: false,
+      ruleForm:{
+
+      },
+      formLabelWidth: '120px'
     }
   },
   methods: {
+    // 处理提交修改
+    submitEdit() {
+      let url = 'http://localhost:9080/brands/' + this.ruleForm.id + '/update';
+      console.log('url:' + url);
+      let formData = this.qs.stringify(this.ruleForm);// 将修改的数据转换为formData格式
+      console.log('formData=' + formData);
+
+      this.axios
+          .create({'headers': {'Authorization': localStorage.getItem('jwt')}})
+          .post(url, formData).then((response) => {
+        let responseBody = response.data;
+        if (responseBody.state == 20000) {
+          this.$message({
+            type: 'success',
+            message: '修改品牌成功!'
+          });
+          this.dialogFormVisible = false;
+          this.loadBrandList();
+        } else if (responseBody.state == 40900) {
+          this.$message.error(responseBody.message);
+        } else {
+          this.$message.error(responseBody.message);
+          this.dialogFormVisible = false;
+          this.loadBrandList();
+        }
+      })
+    },
+    // 处理修改前的数据
+    handleEdit(brand) {
+      let message = '您正在尝试编辑【' + brand.id + '-' + brand.name + '】的相册详情……';
+      console.log(message);
+      this.dialogFormVisible = true;
+      // this.ruleForm = album;
+      let url = 'http://localhost:9080/brands/' + brand.id + '/select';
+      console.log(url);
+      this.axios
+          .create({'headers': {'Authorization': localStorage.getItem('jwt')}})
+          .get(url).then((response) => {
+        let responseBody = response.data;
+        if (responseBody.state == 20000) {
+          this.ruleForm = responseBody.data;
+          this.dialogFormVisible = true;
+        } else {
+          this.$message.error(responseBody.message);
+          this.loadbrandList();
+        }
+      })
+    },
     changeEnable(brand) {
       console.log('brand id=' + brand.id);
       //点击后获取的enable值
@@ -85,12 +169,6 @@ export default {
           this.loadBrandList();
         }
       })
-    },
-    handleEdit(brand) {
-      let message = '您正在尝试编辑【' + brand.id + '-' + brand.name + '】的品牌详情，抱歉，该功能尚未实现……';
-      this.$alert(message, '提示', {
-        confirmButtonText: '确定'
-      });
     },
     handleDelete(brand) {
       let url = 'http://localhost:9080/brands/' + brand.id + '/delete';

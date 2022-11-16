@@ -7,6 +7,20 @@
 
     <el-divider></el-divider>
 
+
+    <el-form :model="ruleForm" ref="ruleForm" label-width="130px" class="demo-ruleForm">
+      <el-form-item label="请选择属性模板">
+        <el-select v-model="ruleForm.templateId" placeholder="请选择" @change="loadAttributeList()">
+          <el-option
+              v-for="item in attributeTemplateListOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+    <el-divider></el-divider>
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
       <el-table-column prop="templateId" label="所属属性模板id" width="120" align="center"></el-table-column>
@@ -33,10 +47,31 @@
 export default {
   data() {
     return {
-      tableData: []
+      attributeTemplateListOptions:[],
+      tableData: [],
+      ruleForm:{
+        templateId:'',
+      },
     }
   },
   methods: {
+
+    // 根据属性模板的id查询属性列表
+    loadAttributeList(){
+      let url = 'http://localhost:9080/attributes/'+this.ruleForm.templateId+'/list';
+      this.axios.create({
+        'headers':{
+          'Authorization':localStorage.getItem('jwt')
+        }
+      }).get(url).then((response)=>{
+        let responseBody = response.data;
+        if (responseBody.state == 20000) {
+          this.tableData = responseBody.data;
+        } else {
+          this.$message.error(responseBody.message);
+        }
+      })
+    },
     handleEdit(attribute) {
       let message = '您正在尝试编辑【' + attribute.id + '-' + attribute.name + '】的属性详情，抱歉，该功能尚未实现……';
       this.$alert(message, '提示', {
@@ -57,7 +92,7 @@ export default {
           this.$message.error(responseBody.message);
         }
         if (responseBody.state == 20000 || responseBody.state == 40400) {
-          this.loadAlbumList();
+          this.loadAttributeTemplateList();
         }
       });
     },
@@ -76,26 +111,26 @@ export default {
         });
       });
     },
-    // 该方法用来请求相册的列表数据
-    loadAlbumList() {
-      console.log('loadAttributeList');
-      let url = "http://localhost:9080/attributes" // 请求路径
-      console.log('url=' + url);
-      this.axios
-          .create({
-            'headers':{
-              'Authorization':localStorage.getItem('jwt')
-            }
-          }).get(url).then((response) => {// 发送异步请求
+    loadAttributeTemplateList() {
+      let url = 'http://localhost:9080/AttributeTemplates';
+      this.axios.create({
+        'headers': {
+          'Authorization': localStorage.getItem('jwt')
+        }
+      }).get(url).then((response) => {
         let responseBody = response.data;
-        this.tableData = responseBody.data;//将获取响应的数据中的data数据赋值给tableData
-      })
+        if (responseBody.state == 20000) {
+          let attributeTemplateList = responseBody.data;
+          this.attributeTemplateListOptions = attributeTemplateList;
+        } else {
+          this.$message.error(responseBody.message);
+        }
+      });
     }
   },
   // 生命周期方法(挂载)
   mounted() {
-    console.log('mounted');
-    this.loadAlbumList();
+    this.loadAttributeTemplateList();
   }
 }
 </script>
