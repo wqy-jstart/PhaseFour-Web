@@ -121,7 +121,7 @@
                 <i class="el-icon-s-grid"></i>
                 <span slot="title">SPU台账</span>
               </el-menu-item>
-              <el-menu-item index="3-2">
+              <el-menu-item index="/sys-admin/product/spu-add-new">
                 <i class="el-icon-circle-plus"></i>
                 <span slot="title">新增SPU</span>
               </el-menu-item>
@@ -182,4 +182,19 @@
 </template>
 
 <script>
+export default {
+    data(){
+    return{
+      activeMenuItemPath:''
+    }
+  },
+  mounted() {
+    let path = this.$router.currentRoute.path;
+    if (path.endsWith('/sys-admin/product/spu-add-new')) {
+      this.activeMenuItemPath = '/sys-admin/product/spu-add-new';
+    } else {
+      this.activeMenuItemPath = path;
+    }
+  }
+}
 </script>
