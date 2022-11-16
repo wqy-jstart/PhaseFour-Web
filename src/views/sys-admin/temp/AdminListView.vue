@@ -12,9 +12,10 @@
       <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
       <el-table-column prop="username" label="用户名" width="120" align="center"></el-table-column>
       <el-table-column prop="nickname" label="昵称" width="120" align="center"></el-table-column>
-      <el-table-column label="头像url">
+      <el-table-column label="头像url" width="100px">
         <template slot-scope="scope">
-          <img :src="scope.row.avatar" width="120" height="120" alt="">
+<!--          <img :src="scope.row.avatar" width="120" height="120" alt="">-->
+          <div class="block"><el-avatar :size="80" :src="scope.row.avatar"></el-avatar></div>
         </template>
       </el-table-column>
       <el-table-column prop="phone" label="手机号码" width="120" align="center"></el-table-column>
@@ -54,7 +55,7 @@
 export default {
   data() {
     return {
-      tableData: []
+      tableData: [],
     }
   },
   methods: {
@@ -97,7 +98,7 @@ export default {
     },
     // 编辑管理员(未开发)
     handleEdit(admin) {
-      let message = '您正在尝试编辑【' + admin.id + '-' + admin.username + '】的相册详情，抱歉，该功能尚未实现……';
+      let message = '您正在尝试编辑【' + admin.id + '-' + admin.username + '】的相册详情,抱歉该功能暂未实现...';
       this.$alert(message, '提示', {
         confirmButtonText: '确定'
       });
