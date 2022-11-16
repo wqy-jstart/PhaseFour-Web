@@ -60,6 +60,7 @@ export default {
                 message: '登录成功!',
                 type:'success' // 提示信息
               });
+              location.href = "/";
               let jwt = responseBody.data;
               console.log('登陆成功,服务器响应JWT:'+jwt);
               localStorage.setItem('jwt',jwt);

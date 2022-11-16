@@ -2,7 +2,8 @@
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right" style="font-size: 16px">
       <el-breadcrumb-item :to="{ path: '/sys-admin' }">
-        <i class="el-icon-s-promotion"></i> 后台管理</el-breadcrumb-item>
+        <i class="el-icon-s-promotion"></i> 后台管理
+      </el-breadcrumb-item>
       <el-breadcrumb-item>类别列表</el-breadcrumb-item>
       <el-breadcrumb-item v-for="item in history"><span v-text="item.name"></span></el-breadcrumb-item>
     </el-breadcrumb>
@@ -63,7 +64,7 @@
       </el-table-column>
     </el-table>
     <el-button style="margin-top: 10px;float: right;"
-               v-if ="currentDepth != 1"
+               v-if="currentDepth != 1"
                @click="goBack()">返回
     </el-button>
   </div>
@@ -73,7 +74,7 @@ export default {
   data() {
     return {
       history: [],
-      currentDepth: 1,
+      currentDepth: 1, // 默认深度为1
       currentParentId: 0,
       displayText: ['不显示在导航栏', '显示在导航栏'],
       enableText: ['禁用', '启用'],
@@ -82,15 +83,15 @@ export default {
   },
   methods: {
     goBack() {
-      let parentCategory = this.history[--this.currentDepth - 1];
-      this.currentParentId = parentCategory.parentId;
-      this.history.pop();
+      let parentCategory = this.history[--this.currentDepth - 1];// 定义上一级的数组下标
+      this.currentParentId = parentCategory.parentId;// 将当前父级id修改为上一级的父级id
+      this.history.pop();// 去除数组中末尾的部分
       this.loadCategoryList();
     },
     showSubCategories(category) {
-      this.history[this.currentDepth - 1] = category;
-      this.currentDepth++;
-      this.currentParentId = category.id;
+      this.history[this.currentDepth - 1] = category;// 每查询一层,都将上一层的类别对象保存到history数组中
+      this.currentDepth++;// 当前深度增加
+      this.currentParentId = category.id;// "当前父级id"==当前的类别id
       this.loadCategoryList()
     },
     changeDisplay(category) {
@@ -215,6 +216,7 @@ export default {
             }
           })
           .get(url).then((response) => {// 发送异步请求
+        let responseBody = response.data;
         if (responseBody.state == 20000) {
           this.tableData = responseBody.data;//将获取响应的数据中的data数据赋值给tableData
         } else {
@@ -223,7 +225,7 @@ export default {
       })
     }
   },
-  // 生命周期方法(挂载)
+  // (挂载)
   mounted() {
     console.log('mounted');
     this.loadCategoryList();
