@@ -9,7 +9,7 @@
     <el-divider></el-divider>
 
 
-    <el-form :model="ruleForm" ref="ruleForm" label-width="130px" class="demo-ruleForm">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="130px" class="demo-ruleForm">
       <el-form-item label="基本信息">
         <el-descriptions :title="this.ruleForm.name">
           <el-descriptions-item label="品牌" span="1">
@@ -45,9 +45,9 @@
 export default {
   data() {
     return {
-      albumListOptions:[],
+      editor:{},// 富文本编辑器
       ruleForm: {
-        albumId: ''
+        detail:'',
       },
       rules: {
       }
@@ -56,6 +56,10 @@ export default {
   methods: {
     backToPreStep() {
       this.$router.push('spu-add-new3');
+    },
+    initWangEditor(){
+      this.editor = new this.wangEditor('#wangEditor');
+      this.editor.create();
     },
     // 加载本地ruleForm数据
     loadLocalRuleForm() {
@@ -68,7 +72,8 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-
+          this.ruleForm.detail = this.editor.txt.html();
+          console.log(this.ruleForm);
         } else {
           console.log('error submit!!');
           return false;
@@ -80,6 +85,7 @@ export default {
     }
   },
   mounted() {
+    this.initWangEditor();// 初始化富文本编辑器
     this.loadLocalRuleForm();
   }
 }

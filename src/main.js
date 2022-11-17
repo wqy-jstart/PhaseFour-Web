@@ -6,7 +6,9 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import axios from 'axios';
 import qs from 'qs';
+import wangEditor from "wangeditor";
 
+Vue.prototype.wangEditor = wangEditor;// 红色的wangEditor是this打点调用的名字
 Vue.use(ElementUI);
 Vue.config.productionTip = false
 Vue.prototype.qs = qs;
