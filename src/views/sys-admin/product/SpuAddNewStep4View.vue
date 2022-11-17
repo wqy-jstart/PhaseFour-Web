@@ -59,6 +59,7 @@ export default {
     },
     initWangEditor(){
       this.editor = new this.wangEditor('#wangEditor');
+      this.editor.config.zIndex = 1;// 调节显示级别
       this.editor.create();
     },
     // 加载本地ruleForm数据
@@ -72,8 +73,29 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          let url = 'http://localhost:9080/spu/add-New';
+          console.log('url='+url);
           this.ruleForm.detail = this.editor.txt.html();
-          console.log(this.ruleForm);
+          let formData = this.qs.stringify(this.ruleForm);
+          console.log('formData='+formData);
+
+          this.axios.create(
+              {'headers':{'Authorization':localStorage.getItem('jwt')}}
+          )
+          .post(url,formData).then((response)=>{
+            let responseBody = response.data;
+            if (responseBody.state == 20000){
+              this.$alert('添加SPU成功!', '操作成功', {
+                confirmButtonText: '确定',
+                callback: action => {
+                  localStorage.removeItem('ruleForm');
+                  this.$router.push('spu-add-new');
+                }
+              });
+            }else {
+              this.$message.error(responseBody.message);
+            }
+          })
         } else {
           console.log('error submit!!');
           return false;
