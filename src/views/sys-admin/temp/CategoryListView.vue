@@ -185,6 +185,7 @@ export default {
           this.$message.error(responseBody.message);
         }
         if (responseBody.state == 20000 || responseBody.state == 40400) {
+          this.$message.success("删除成功！")
           this.loadCategoryList();
         }
       });
