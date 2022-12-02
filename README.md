@@ -17,7 +17,7 @@ npm run build
 
 ### 引入Axios框架
 ````
-npm i axios -s
+npm i axios -S
 ````
 然后在main.js中添加配置 
 
