@@ -66,19 +66,19 @@ const routes = [
             // --------------------------------------------------------------------
             {
                 path: '/sys-admin/product/spu-add-new',
-                component: () => import( '../views/sys-admin/product/SpuAddNewStep1View.vue')
+                component: () => import( '../../../anhui-csmall-client/src/views/sys-admin/product/SpuAddNewStep1View.vue')
             },
             {
                 path: '/sys-admin/product/spu-add-new2',
-                component: () => import('../views/sys-admin/product/SpuAddNewStep2View.vue')
+                component: () => import('../../../anhui-csmall-client/src/views/sys-admin/product/SpuAddNewStep2View.vue')
             },
             {
                 path: '/sys-admin/product/spu-add-new3',
-                component: () => import('../views/sys-admin/product/SpuAddNewStep3View.vue')
+                component: () => import('../../../anhui-csmall-client/src/views/sys-admin/product/SpuAddNewStep3View.vue')
             },
             {
                 path: '/sys-admin/product/spu-add-new4',
-                component: () => import('../views/sys-admin/product/SpuAddNewStep4View.vue')
+                component: () => import('../../../anhui-csmall-client/src/views/sys-admin/product/SpuAddNewStep4View.vue')
             }
         ]
     },
