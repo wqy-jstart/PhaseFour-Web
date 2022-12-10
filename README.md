@@ -60,6 +60,12 @@ Vue.prototype.qs = qs;
 let formData = this.qs.stringify(this.ruleForm);
 ```
 
+安装此富文本编辑器：
+
+```
+npm i wangeditor -S
+```
+
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
