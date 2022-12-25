@@ -25,9 +25,11 @@
   </div>
 </template>
 <script>
+import global from '../../../components/Global';
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       tableData: []
     }
   },
@@ -39,7 +41,7 @@ export default {
       });
     },
     handleDelete(AttributeTemplate) {
-      let url = 'http://localhost:9080/AttributeTemplates/' + AttributeTemplate.id + '/delete';
+      let url = this.productUrl+'AttributeTemplates/' + AttributeTemplate.id + '/delete';
       console.log('url=' + url);
       this.axios
           .create({
@@ -75,7 +77,7 @@ export default {
     // 该方法用来请求相册的列表数据
     loadAttributeTemplateList() {
       console.log('loadAttributeTemplateList');
-      let url = "http://localhost:9080/AttributeTemplates" // 请求路径
+      let url = this.productUrl+"AttributeTemplates" // 请求路径
       console.log('url=' + url);
       this.axios
           .create({

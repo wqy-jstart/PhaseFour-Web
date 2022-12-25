@@ -75,9 +75,11 @@
   </div>
 </template>
 <script>
+import global from '../../../components/Global';
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       tableData: [],
       dialogFormVisible: false,
       ruleForm:{
@@ -89,7 +91,7 @@ export default {
   methods: {
     // 处理提交修改
     submitEdit() {
-      let url = 'http://localhost:9080/brands/' + this.ruleForm.id + '/update';
+      let url = this.productUrl+'brands/' + this.ruleForm.id + '/update';
       console.log('url:' + url);
       let formData = this.qs.stringify(this.ruleForm);// 将修改的数据转换为formData格式
       console.log('formData=' + formData);
@@ -120,7 +122,7 @@ export default {
       console.log(message);
       this.dialogFormVisible = true;
       // this.ruleForm = album;
-      let url = 'http://localhost:9080/brands/' + brand.id + '/select';
+      let url = this.productUrl+'brands/' + brand.id + '/select';
       console.log(url);
       this.axios
           .create({'headers': {'Authorization': localStorage.getItem('jwt')}})
@@ -140,7 +142,7 @@ export default {
       //点击后获取的enable值
       console.log('brand enable=' + brand.enable);
       let enableText = ['禁用', '启用'];
-      let url = 'http://localhost:9080/brands/' + brand.id;
+      let url = this.productUrl+'brands/' + brand.id;
       if (brand.enable == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
         console.log("启用品牌")
         url += '/enable';
@@ -171,7 +173,7 @@ export default {
       })
     },
     handleDelete(brand) {
-      let url = 'http://localhost:9080/brands/' + brand.id + '/delete';
+      let url = this.productUrl+'brands/' + brand.id + '/delete';
       console.log('url=' + url);
       this.axios
           .create({
@@ -207,7 +209,7 @@ export default {
     // 该方法用来请求相册的列表数据
     loadBrandList() {
       console.log('loadBrandList');
-      let url = "http://localhost:9080/brands" // 请求路径
+      let url = this.productUrl+"brands" // 请求路径
       console.log('url=' + url);
       this.axios
           .create({

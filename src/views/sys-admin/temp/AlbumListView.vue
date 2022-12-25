@@ -44,9 +44,11 @@
 </template>
 
 <script>
+import global from '../../../components/Global';
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       tableData: [],
       dialogFormVisible: false,
       ruleForm: {
@@ -61,7 +63,7 @@ export default {
   methods: {
     // 处理提交修改
     submitEdit() {
-      let url = 'http://localhost:9080/albums/' + this.ruleForm.id + '/update';
+      let url = this.productUrl+'albums/' + this.ruleForm.id + '/update';
       console.log('url:' + url);
       let formData = this.qs.stringify(this.ruleForm);// 将修改的数据转换为formData格式
       console.log('formData=' + formData);
@@ -92,7 +94,7 @@ export default {
       console.log(message);
       this.dialogFormVisible = true;
       // this.ruleForm = album;
-      let url = 'http://localhost:9080/albums/' + album.id + '/select';
+      let url = this.productUrl+'albums/' + album.id + '/select';
       console.log(url);
       this.axios
           .create({'headers': {'Authorization': localStorage.getItem('jwt')}})
@@ -108,7 +110,7 @@ export default {
       })
     },
     handleDelete(album) {
-      let url = 'http://localhost:9080/albums/' + album.id + '/delete';
+      let url = this.productUrl+'albums/' + album.id + '/delete';
       console.log('url=' + url);
       this.axios
           .create({
@@ -144,7 +146,7 @@ export default {
     // 该方法用来请求相册的列表数据
     loadAlbumList() {
       console.log('loadAlbumList');
-      let url = "http://localhost:9080/albums" // 请求路径
+      let url = this.productUrl+"albums" // 请求路径
       console.log('url=' + url);
       this.axios
           .create({

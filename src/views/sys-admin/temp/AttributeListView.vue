@@ -44,9 +44,11 @@
   </div>
 </template>
 <script>
+import global from '../../../components/Global';
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       attributeTemplateListOptions:[],
       tableData: [],
       ruleForm:{
@@ -58,7 +60,7 @@ export default {
 
     // 根据属性模板的id查询属性列表
     loadAttributeList(){
-      let url = 'http://localhost:9080/attributes/'+this.ruleForm.templateId+'/list';
+      let url = this.productUrl+'attributes/'+this.ruleForm.templateId+'/list';
       this.axios.create({
         'headers':{
           'Authorization':localStorage.getItem('jwt')
@@ -79,7 +81,7 @@ export default {
       });
     },
     handleDelete(attribute) {
-      let url = 'http://localhost:9080/attributes/' + attribute.id + '/delete';
+      let url = this.productUrl+'attributes/' + attribute.id + '/delete';
       console.log('url=' + url);
       this.axios
           .create({
@@ -113,7 +115,7 @@ export default {
       });
     },
     loadAttributeTemplateList() {
-      let url = 'http://localhost:9080/AttributeTemplates';
+      let url = this.productUrl+'AttributeTemplates';
       this.axios.create({
         'headers': {
           'Authorization': localStorage.getItem('jwt')

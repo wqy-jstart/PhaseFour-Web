@@ -24,9 +24,12 @@
   </div>
 </template>
 <script>
+import global from '../../../components/Global';
+
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       ruleForm: {
         name: '',
         description: '',
@@ -52,7 +55,7 @@ export default {
       // 对表单进行检查
       this.$refs[formName].validate((valid) => {
         if (valid) { // 满足条件则通过验证
-          let url = 'http://localhost:9080/albums/add-new'
+          let url = this.productUrl+'albums/add-new'
           console.log('url = ' + url);
           let formData = this.qs.stringify(this.ruleForm);//将formData对象转换成FormData格式,当后端不添加@RequestBody注解时接收
           console.log('formData=' + formData);

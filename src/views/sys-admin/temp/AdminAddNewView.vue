@@ -58,9 +58,12 @@
 </template>
 
 <script>
+import global from'../../../components/Global'; // 将管理员后端路径设为全局
+
 export default {
   data() {
     return {
+      passportUrl:global.passportUrl,
       roleListOptions: [],
       ruleForm: {
         roleIds: [],// 绑定多选角色的多个id
@@ -109,7 +112,7 @@ export default {
     // 获取角色列表
     loadRoleList() {
       console.log('loadRoleList');
-      let url = "http://localhost:9081/roles" // 请求路径
+      let url = this.passportUrl+"roles" // 请求路径
       console.log('url=' + url);
       this.axios
           .create({
@@ -127,7 +130,7 @@ export default {
       // 对表单进行检查
       this.$refs[formName].validate((valid) => {
         if (valid) { // 满足条件则通过验证
-          let url = 'http://localhost:9081/admins/add-new'
+          let url = this.passportUrl+'admins/add-new'
           console.log('url = ' + url);
           //将formData对象转换成FormData格式,当后端不添加@RequestBody注解时接收    {indices、brackets、repeat}数组格式
           let formData = this.qs.stringify(this.ruleForm,{arrayFormat:'repeat'});

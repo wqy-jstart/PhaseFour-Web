@@ -70,9 +70,11 @@
   </div>
 </template>
 <script>
+import global from '../../../components/Global';
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       history: [],
       currentDepth: 1, // 默认深度为1
       currentParentId: 0,
@@ -98,7 +100,7 @@ export default {
       console.log('category id=' + category.id);
       //点击后获取的enable值
       console.log('category isDisplay=' + category.isDisplay);
-      let url = 'http://localhost:9080/categories/' + category.id;
+      let url = this.productUrl+'categories/' + category.id;
       if (category.isDisplay == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
         console.log("显示类别")
         url += '/display';
@@ -133,7 +135,7 @@ export default {
       console.log('category id=' + category.id);
       //点击后获取的enable值
       console.log('category enable=' + category.enable);
-      let url = 'http://localhost:9080/categories/' + category.id;
+      let url = this.productUrl+'categories/' + category.id;
       if (category.enable == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
         console.log("启用类别")
         url += '/enable';
@@ -171,7 +173,7 @@ export default {
       });
     },
     handleDelete(category) {
-      let url = 'http://localhost:9080/categories/' + category.id + '/delete';
+      let url = this.productUrl+'categories/' + category.id + '/delete';
       console.log('url=' + url);
       this.axios
           .create({
@@ -208,7 +210,7 @@ export default {
     // 该方法用来请求相册的列表数据
     loadCategoryList() {
       console.log('loadCategoryList');
-      let url = "http://localhost:9080/categories/list-by-parent?parentId=" + this.currentParentId // 请求路径
+      let url = this.productUrl+"categories/list-by-parent?parentId=" + this.currentParentId // 请求路径
       console.log('url=' + url);
       this.axios
           .create({

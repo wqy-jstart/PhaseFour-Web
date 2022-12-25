@@ -25,9 +25,11 @@ body{
 </template>
 
 <script>
+import global from '../components/Global'
 export default {
   data() {
     return {
+      passportUrl: global.passportUrl,
       ruleForm: {// 初始化ruleForm对象
         username: '',
         password: ''
@@ -49,7 +51,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let url = 'http://localhost:9081/admins/login';
+          let url = this.passportUrl+'admins/login';
           console.log("url="+url);
           let formData = this.qs.stringify(this.ruleForm);
           console.log('formData = '+formData);

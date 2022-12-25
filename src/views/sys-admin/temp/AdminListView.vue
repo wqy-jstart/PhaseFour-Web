@@ -52,9 +52,11 @@
   </div>
 </template>
 <script>
+import global from'../../../components/Global'; // 将管理员后端路径设为全局
 export default {
   data() {
     return {
+      passportUrl: global.passportUrl,
       tableData: [],
     }
   },
@@ -65,7 +67,7 @@ export default {
       //点击后获取的enable值
       console.log('admin enable=' + admin.enable);
       let enableText = ['禁用', '启用'];
-      let url = 'http://localhost:9081/admins/' + admin.id;
+      let url = this.passportUrl+'admins/' + admin.id;
       if (admin.enable == 1) { // 如果点击后enable为1,说明是启用操作,则请求路径应为处理启用的路径
         console.log("启用管理员")
         url += '/enable';
@@ -105,7 +107,7 @@ export default {
     },
     // 根据id删除管理员
     handleDelete(admin) {
-      let url = 'http://localhost:9081/admins/' + admin.id + '/delete';
+      let url = this.passportUrl+'admins/' + admin.id + '/delete';
       console.log('url=' + url);
       this.axios
           .create({
@@ -143,7 +145,7 @@ export default {
     loadAdminList() {
       console.log('loadAdminList');
       console.log('在localStorage中的JWT数据:' + localStorage.getItem('jwt'))
-      let url = "http://localhost:9081/admins" // 请求路径
+      let url = this.passportUrl+"admins" // 请求路径
       console.log('url=' + url);
       // .create方法会返回一个axios对象,可在其中配置请求头
       this.axios

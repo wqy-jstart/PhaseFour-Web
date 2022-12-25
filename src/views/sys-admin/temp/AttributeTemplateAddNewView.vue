@@ -30,9 +30,11 @@
   </div>
 </template>
 <script>
+import global from '../../../components/Global';
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       value: true,
       ruleForm: {
         name: '',
