@@ -33,9 +33,11 @@
 </template>
 
 <script>
+import global from'../../../components/Global'; // 将管理员后端路径设为全局
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       albumListOptions: [],
       ruleForm: {
         albumId: '',
@@ -62,7 +64,7 @@ export default {
     },
     loadAlbumList() {
       console.log('准备从服务器端加载【相册列表】……');
-      let url = 'http://localhost:9080/albums';
+      let url = this.productUrl+'albums';
       console.log('请求路径：' + url);
       this.axios
           .create({'headers': {'Authorization': localStorage.getItem('jwt')}})
@@ -77,7 +79,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let url = 'http://localhost:9080/albums/'+this.ruleForm.albumId+'/select';
+          let url = this.productUrl+'albums/'+this.ruleForm.albumId+'/select';
           console.log('url='+url);
           this.axios
               .create({'headers': {'Authorization': localStorage.getItem('jwt')}})

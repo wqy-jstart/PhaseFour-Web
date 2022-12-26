@@ -42,9 +42,11 @@
 </template>
 
 <script>
+import global from'../../../components/Global'; // 将管理员后端路径设为全局
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       editor:{},// 富文本编辑器
       ruleForm: {
         detail:'',
@@ -73,7 +75,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let url = 'http://localhost:9080/spu/add-New';
+          let url = +this.productUrl+'spu/add-New';
           console.log('url='+url);
           this.ruleForm.detail = this.editor.txt.html();
           let formData = this.qs.stringify(this.ruleForm);

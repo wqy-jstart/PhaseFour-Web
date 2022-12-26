@@ -74,9 +74,11 @@
 </template>
 
 <script>
+import global from'../../../components/Global'; // 将管理员后端路径设为全局
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       brandListOptions: [],
       ruleForm: {
         categoryId: '',
@@ -153,7 +155,7 @@ export default {
       this.$router.push('spu-add-new');
     },
     loadBrandList(){
-      let url ='http://localhost:9080/brands';
+      let url =this.productUrl+'brands';
       console.log('url='+url);
       this.axios
       .create(
@@ -170,7 +172,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let url = 'http://localhost:9080/brands/'+this.ruleForm.brandId+'/select';
+          let url = this.productUrl+'brands/'+this.ruleForm.brandId+'/select';
           console.log('url = ' + url);
           this.axios
               .create({'headers': {'Authorization': localStorage.getItem('jwt')}})
