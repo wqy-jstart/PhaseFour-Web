@@ -20,9 +20,12 @@
   </div>
 </template>
 <script>
+import global from'../../../components/Global'; // 将管理员后端路径设为全局
+
 export default {
   data() {
     return {
+      productUrl: global.productUrl,
       ruleForm: {
         categoryId: '',
         categoryName: ''
@@ -49,7 +52,7 @@ export default {
       // 【不推荐】方案C：连接服务器检查，类别ID有效时将其保存到服务器端的SPU数据表，到下一步
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let url = 'http://localhost:9080/categories/'+this.ruleForm.categoryId+'/select';
+          let url = this.productUrl+'categories/'+this.ruleForm.categoryId+'/select';
           console.log('url='+url);
           this.axios
           .create(
