@@ -4,8 +4,8 @@
 
 <script>
 
-const passportUrl = 'http://39.105.215.87:9081/';
-const productUrl = 'http://39.105.215.87:9080/';
+const passportUrl = 'http://125.74.199.190:9081/';
+const productUrl = 'http://125.74.199.190:9080/';
 
 export default {
   name: "Global.vue",
